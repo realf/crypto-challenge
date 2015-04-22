@@ -23,66 +23,73 @@ int FromHexToDecimal(char hex) {
     return hex - 'a' + 10;
 }
 
-char *CreateHexToBase64(char *hexString, size_t hexSize) {
+char *CreateBase64StringFromHexString(char *hexString, size_t hexSize) {
     if (hexString == NULL || hexSize % 2 != 0) {
         return NULL;
     }
     
     static const char * const sBase = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     
-    const size_t dataSize = hexSize / 2;
-    const size_t remainder = dataSize % 3;
-    const size_t resultSize = dataSize * 4 / 3 + remainder;
-    char *result = malloc(sizeof(char) * resultSize + 1);
+    const size_t dataSize = hexSize / 2; // size of raw data in bytes
+    const size_t alignedBy3DataSize = (dataSize / 3 + 1) * 3; // size of raw data aligned to the next number that is a multiple of 3
+    const size_t resultSize = alignedBy3DataSize * 4 / 3; // size of Base64 encoded string
+    char *encodedString = malloc(sizeof(char) * (resultSize + 1));
     
     char *p = hexString;
     char *endOfString = hexString + hexSize;
     size_t count = 0;
+    int leaps = 0;
     
-    while (p <= endOfString) {
+    while (p < endOfString) {
         uint32_t buffer = 0;
         
         uint8_t byte = 16 * FromHexToDecimal(*p++) + FromHexToDecimal(*p++);
         buffer |= byte << 16;
         
-        if (p < endOfString - 2) {
+        if (p <= endOfString - 2) {
             byte = 16 * FromHexToDecimal(*p++) + FromHexToDecimal(*p++);
             buffer |= byte << 8;
         }
+        else {
+            leaps++;
+        }
         
-        if (p < endOfString - 2) {
+        if (p <= endOfString - 2) {
             byte = 16 * FromHexToDecimal(*p++) + FromHexToDecimal(*p++);
             buffer |= byte;
         }
+        else {
+            leaps++;
+        }
         
         size_t index = (buffer >> 18) & 0x3F;
-        result[0 + count] = sBase[index];
+        encodedString[0 + count] = sBase[index];
         
         index = (buffer >> 12) & 0x3F;
-        result[1 + count] = sBase[index];
+        encodedString[1 + count] = sBase[index];
         
         index = (buffer >> 6) & 0x3F;
-        result[2 + count] = sBase[index];
+        encodedString[2 + count] = sBase[index];
         
         index = buffer & 0x3F;
-        result[3 + count] = sBase[index];
+        encodedString[3 + count] = sBase[index];
         
         count += 4;
     }
     
-    result[count] = '\0';
+    encodedString[count] = '\0';
     
-    for (size_t i = 1; i <= remainder; i++) {
-        result[resultSize - i] = '=';
+    for (size_t i = 1; i <= leaps; i++) {
+        encodedString[resultSize - i] = '=';
     }
     
-    return result;
+    return encodedString;
 }
 
 int main(int argc, const char * argv[]) {
     char *hexString = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
     char *base64String = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
-    char *convertedString = CreateHexToBase64(hexString, strlen(hexString));
+    char *convertedString = CreateBase64StringFromHexString(hexString, strlen(hexString));
     
     assert(strcmp(convertedString, base64String) == 0);
     
