@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		462AADC31AE846FC00CDD3C6 /* crypto.c in Sources */ = {isa = PBXBuildFile; fileRef = 462AADC21AE846FB00CDD3C6 /* crypto.c */; };
 		4639ABB51AE70771000D6835 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 4639ABB41AE70771000D6835 /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		462AADC11AE8464B00CDD3C6 /* crypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = crypto.h; sourceTree = "<group>"; };
+		462AADC21AE846FB00CDD3C6 /* crypto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = crypto.c; sourceTree = "<group>"; };
 		4639ABB11AE70771000D6835 /* hextobase64 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hextobase64; sourceTree = BUILT_PRODUCTS_DIR; };
 		4639ABB41AE70771000D6835 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				4639ABB41AE70771000D6835 /* main.c */,
+				462AADC11AE8464B00CDD3C6 /* crypto.h */,
+				462AADC21AE846FB00CDD3C6 /* crypto.c */,
 			);
 			path = hextobase64;
 			sourceTree = "<group>";
@@ -118,6 +123,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				462AADC31AE846FC00CDD3C6 /* crypto.c in Sources */,
 				4639ABB51AE70771000D6835 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,6 +238,7 @@
 				4639ABBA1AE70771000D6835 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
