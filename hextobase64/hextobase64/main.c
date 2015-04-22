@@ -17,7 +17,7 @@ int FromHexToDecimal(char hex) {
     }
     
     if (hex >= 'A' && hex <= 'Z') {
-        return hex - 'A'  + 10;
+        return hex - 'A' + 10;
     }
     
     return hex - 'a' + 10;
@@ -43,36 +43,20 @@ char *CreateBase64StringFromHexString(char *hexString, size_t hexSize) {
     while (p < endOfString) {
         uint32_t buffer = 0;
         
-        uint8_t byte = 16 * FromHexToDecimal(*p++) + FromHexToDecimal(*p++);
-        buffer |= byte << 16;
-        
-        if (p <= endOfString - 2) {
-            byte = 16 * FromHexToDecimal(*p++) + FromHexToDecimal(*p++);
-            buffer |= byte << 8;
-        }
-        else {
-            leaps++;
-        }
-        
-        if (p <= endOfString - 2) {
-            byte = 16 * FromHexToDecimal(*p++) + FromHexToDecimal(*p++);
-            buffer |= byte;
-        }
-        else {
-            leaps++;
+        for (int i = 0; i < 3; i++) {
+            if (p <= endOfString - 2) {
+                uint8_t byte = 16 * FromHexToDecimal(*p++) + FromHexToDecimal(*p++);
+                buffer |= byte << (16 - 8 * i);
+            }
+            else {
+                leaps++;
+            }
         }
         
-        size_t index = (buffer >> 18) & 0x3F;
-        encodedString[0 + count] = sBase[index];
-        
-        index = (buffer >> 12) & 0x3F;
-        encodedString[1 + count] = sBase[index];
-        
-        index = (buffer >> 6) & 0x3F;
-        encodedString[2 + count] = sBase[index];
-        
-        index = buffer & 0x3F;
-        encodedString[3 + count] = sBase[index];
+        for (int i = 0; i < 4; i++) {
+            size_t index = (buffer >> (18 - 6 * i)) & 0x3F;
+            encodedString[i + count] = sBase[index];
+        }
         
         count += 4;
     }
