@@ -20,4 +20,6 @@ char *RLFCreateBase64StringFromHexString(char *hexEncodedString, size_t size);
 /// @return Non-negative integer value of hex encoded byte. If \code hexEncodedByte is an invalid string, returns a negative value.
 int RLFHexByteStringToInt(char hexEncodedByte[2]);
 
+char *RLFCreateStringXORingStringWithKey(char *source, char *key, size_t size);
+
 #endif

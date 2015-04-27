@@ -24,6 +24,22 @@ int RLFHexDigitCharacterToInt(char hexDigit) {
     return hexDigit - 'a' + 10;
 }
 
+char RLFIntToHexDigitCharacter(int number) {
+    if (number < 10) {
+        return '0' + number;
+    }
+    
+    if (number < 16) {
+        return 'a' + number - 10;
+    }
+    
+    return '\0';
+}
+
+_Bool isOdd(size_t number) {
+    return number % 2 != 0;
+}
+
 #pragma mark - Public
 
 int RLFHexByteStringToInt(char hexEncodedByte[2]) {
@@ -35,8 +51,17 @@ int RLFHexByteStringToInt(char hexEncodedByte[2]) {
     return byte;
 }
 
+void RLFByteToHexString(int byte, char **stringRef) {
+    if (stringRef == NULL) {
+        return;
+    }
+    
+    (*stringRef)[0] = RLFIntToHexDigitCharacter(byte / 0x10);
+    (*stringRef)[1] = RLFIntToHexDigitCharacter(byte % 0x10);
+}
+
 char *RLFCreateBase64StringFromHexString(char *hexEncodedString, size_t size) {
-    if (hexEncodedString == NULL || size % 2 != 0) {
+    if (hexEncodedString == NULL || isOdd(size)) {
         return NULL;
     }
     
@@ -45,7 +70,7 @@ char *RLFCreateBase64StringFromHexString(char *hexEncodedString, size_t size) {
     const size_t dataSize = size / 2; // size of raw data in bytes
     const size_t alignedBy3DataSize = (dataSize / 3 + 1) * 3; // size of raw data aligned to the next number that is a multiple of 3
     const size_t resultSize = alignedBy3DataSize * 4 / 3; // size of Base64 encoded string
-    char *encodedString = malloc(sizeof(char) * (resultSize + 1));
+    char *encodedString = malloc(sizeof(typeof(encodedString)) * (resultSize + 1));
     
     char *p = hexEncodedString;
     char *endOfString = hexEncodedString + size;
@@ -81,4 +106,31 @@ char *RLFCreateBase64StringFromHexString(char *hexEncodedString, size_t size) {
     }
     
     return encodedString;
+}
+
+char *RLFCreateStringXORingStringWithKey(char *source, char *key, size_t size) {
+    if (source == NULL || key == NULL || isOdd(size)) {
+        return NULL;
+    }
+    
+    char *xoredString = malloc(sizeof(typeof(xoredString)) * (size + 1));
+
+    char *pXored = xoredString;
+    char *pSource = source;
+    char *pKey = key;
+    char *endOfString = pSource + size;
+    
+    while (pSource < endOfString) {
+        uint8_t sourceByte = RLFHexByteStringToInt(pSource);
+        uint8_t keyByte = RLFHexByteStringToInt(pKey);
+        uint8_t result = sourceByte ^ keyByte;
+        RLFByteToHexString(result, &pXored);
+        pSource += 2;
+        pKey += 2;
+        pXored += 2;
+    }
+    
+    *pXored = '\0';
+    
+    return xoredString;
 }
