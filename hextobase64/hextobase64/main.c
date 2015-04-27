@@ -15,8 +15,9 @@
 int main(int argc, const char * argv[]) {
     char *hexString = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
     char *base64String = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
-    char *convertedString = CreateBase64StringFromHexString(hexString, strlen(hexString));
+    char *convertedString = RLFCreateBase64StringFromHexString(hexString, strlen(hexString));
     
+    assert(RLFHexByteStringToInt("0f") == 15);
     assert(strcmp(convertedString, base64String) == 0);
     
     free(convertedString);

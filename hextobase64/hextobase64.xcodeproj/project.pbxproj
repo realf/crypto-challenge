@@ -69,8 +69,8 @@
 		46683AF71AEEE52C0078115C /* RLFCrypto */ = {
 			isa = PBXGroup;
 			children = (
-				46683AF81AEEE52C0078115C /* crypto.c */,
 				46683AF91AEEE52C0078115C /* crypto.h */,
+				46683AF81AEEE52C0078115C /* crypto.c */,
 			);
 			name = RLFCrypto;
 			path = ../RLFCrypto;
